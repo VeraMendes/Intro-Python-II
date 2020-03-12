@@ -1,24 +1,33 @@
 from room import Room
+from player import Player
+# from item import Item
+# import cmd
+import textwrap
+import sys
+import os
+# import time
+
 
 # Declare all the rooms
 
 room = {
     'outside':  Room("Outside Cave Entrance",
-                     "North of you, the cave mount beckons"),
+                     "North of you, the cave mount beckons",
+                     "outside"),
 
     'foyer':    Room("Foyer", """Dim light filters in from the south. Dusty
-passages run north and east."""),
+passages run north and east.""", "foyer"),
 
     'overlook': Room("Grand Overlook", """A steep cliff appears before you, falling
 into the darkness. Ahead to the north, a light flickers in
-the distance, but there is no way across the chasm."""),
+the distance, but there is no way across the chasm.""", "overlook"),
 
     'narrow':   Room("Narrow Passage", """The narrow passage bends here from west
-to north. The smell of gold permeates the air."""),
+to north. The smell of gold permeates the air.""", "narrow"),
 
     'treasure': Room("Treasure Chamber", """You've found the long-lost treasure
 chamber! Sadly, it has already been completely emptied by
-earlier adventurers. The only exit is to the south."""),
+earlier adventurers. The only exit is to the south.""", "treasure")
 }
 
 
@@ -36,16 +45,105 @@ room['treasure'].s_to = room['narrow']
 #
 # Main
 #
+def title_screen_selections():
+    option = input(">>>")
+    if option.lower().strip() == ("play"):
+        start_game()
+    elif option.lower().strip() == ("help"):
+        help_menu()
+    elif option.lower().strip() == ("quit"):
+        sys.exit()
+    while option.lower().strip() not in ["play", "help", "quit"]:
+        print("Please enter a valid command.")
+        option = input(">>>")
+        if option.lower().strip() == ("play"):
+            start_game()
+        elif option.lower().strip() == ("help"):
+            help_menu()
+        elif option.lower().strip() == ("quit"):
+            sys.exit()
+
+
+def title_screen():
+    os.system("clear")
+    print("#################################")
+    print("#Welcome to your Adventure Game!#")
+    print("#################################")
+    print("            - Play -             ")
+    print("            - Help -             ")
+    print("            - Quit -             ")
+    print("#################################")
+    title_screen_selections()
+
+def help_menu():
+    print("#################################")
+    print("          Help Menu              ")
+    print("#################################")
+    print("Use n to go North, s to go South ")
+    print("e to go East and w to go West    ")
+    print("     write play or quit          ")
+    print("   Use your commands to select   ")
+    print("   Good luck and have fun!!!     ")
+    title_screen_selections()
+
 
 # Make a new player object that is currently in the 'outside' room.
+
+def start_game():
+    print("Enter your name")
+    global name
+    name = input(">>>")
+    global myPlayer
+    myPlayer = Player(name, room['outside'])
+    start_location = room['outside']
+    print (f"You are here -> {start_location}")
+
+
+def move_to_room(direction):
+    '''valid inputs = ['n', 's', 'e', 'w', 'q']'''
+    if direction == 'q':
+        sys.exit()
+
+    try:
+
+        if direction == 'n':
+            myPlayer.current_room = room[myPlayer.current_room.key].n_to
+        elif direction == 's':
+            myPlayer.current_room = room[myPlayer.current_room.key].s_to
+        elif direction == 'e':
+            myPlayer.current_room = room[myPlayer.current_room.key].e_to
+        elif direction == 'w':
+            myPlayer.current_room = room[myPlayer.current_room.key].w_to
+        else:
+            raise ValueError
+
+        # if valid direction
+        # print print new player's current room name and description
+        new_location = myPlayer.current_room
+        print (f"You are here -> {new_location}")
+
+    except ValueError:
+        print("Not a valid direction!")
+
+    except:
+        print("No room in this direction!")
+        
+
 
 # Write a loop that:
 #
 # * Prints the current room name
 # * Prints the current description (the textwrap module might be useful here).
 # * Waits for user input and decides what to do.
-#
+
 # If the user enters a cardinal direction, attempt to move to the room there.
 # Print an error message if the movement isn't allowed.
 #
 # If the user enters "q", quit the game.
+
+title_screen()
+
+while(True):
+    move = False
+    direction = input("move -> ").lower()
+    move_to_room(direction)
