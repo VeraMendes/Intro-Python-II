@@ -1,11 +1,21 @@
 from room import Room
 from player import Player
-# from item import Item
+from item import Item, Food
 # import cmd
 import textwrap
 import sys
 import os
 # import time
+
+# Declare all the items
+
+item = {
+    'flashlight': Item("flashlight", "This can be helpful during night time"),
+    'knife': Item("knife", "This can help during hard situations"),
+    'fish': Food("fish", "Eating this will give you energy", 200),
+    'compass': Item("compass", "This will guide on your adventure"),
+    'pet': Item("pet", "Your best friend!")
+}
 
 
 # Declare all the rooms
@@ -13,7 +23,7 @@ import os
 room = {
     'outside':  Room("Outside Cave Entrance",
                      "North of you, the cave mount beckons",
-                     "outside"),
+                     "outside", [item['pet'], item['knife']]),
 
     'foyer':    Room("Foyer", """Dim light filters in from the south. Dusty
 passages run north and east.""", "foyer"),
@@ -41,6 +51,7 @@ room['overlook'].s_to = room['foyer']
 room['narrow'].w_to = room['foyer']
 room['narrow'].n_to = room['treasure']
 room['treasure'].s_to = room['narrow']
+
 
 #
 # Main
@@ -100,27 +111,56 @@ def start_game():
 
 
 def move_to_room(direction):
-    '''valid inputs = ['n', 's', 'e', 'w', 'q']'''
+    '''valid inputs = ['n', 's', 'e', 'w', 'q', 'get [item]', 'drop [item]' ]'''
     if direction == 'q':
+        print("Goodbye!")
         sys.exit()
 
     try:
 
         if direction == 'n':
             myPlayer.current_room = room[myPlayer.current_room.key].n_to
+            moving = True
         elif direction == 's':
             myPlayer.current_room = room[myPlayer.current_room.key].s_to
+            moving = True
         elif direction == 'e':
             myPlayer.current_room = room[myPlayer.current_room.key].e_to
+            moving = True
         elif direction == 'w':
             myPlayer.current_room = room[myPlayer.current_room.key].w_to
+            moving = True
+
+        # if players enters get [<item>], confirm item is valid
+        # item is removed from room's list of items and added to player list of items
+        elif direction.split(' ')[0] == 'get':
+            item = direction[-1]
+            if item in myPlayer.current_room.items:
+                myPlayer.items.append(item)
+                myPlayer.current_room.items.remove(item)
+                print (f'You have picked up the {item}.')
+                moving = True
+            else:
+                print('That is not a valid item.')
+
+        elif direction.split(' ')[1] == 'drop':
+            item = direction[-1]
+            if item in myPlayer.items:
+                myPlayer.items.remove(item)
+                myPlayer.current_room.items.append(item)
+                print(f'You have dropped the {item}.')
+                moving = True
+            else:
+                print('That is not a valid item.')
+
         else:
             raise ValueError
 
         # if valid direction
-        # print print new player's current room name and description
-        new_location = myPlayer.current_room
-        print (f"You are here -> {new_location}")
+        # print new player's current room name and description
+        # new_location = myPlayer.current_room
+        # print (f"\n You are here -> {new_location}")
+        print (f"{myPlayer}")
 
     except ValueError:
         print("Not a valid direction!")
@@ -144,6 +184,32 @@ def move_to_room(direction):
 title_screen()
 
 while(True):
-    move = False
+
+    global moving
+    moving = False
+
+    print(f"Where would you like to go or what would you like to do in this room?\n")
     direction = input("move -> ").lower()
     move_to_room(direction)
+
+    # if players enters get [<item>], confirm item is valid
+    # item is removed from room's list of items and added to player list of items
+    # if direction.split(' ')[0] == 'get':
+    #     item = direction[4:]
+    #     if item in myPlayer.current_room.items:
+    #         myPlayer.items.append(item)
+    #         myPlayer.current_room.items.remove(item)
+    #         print (f'You have picked up the {item}.')
+    #         moving = True
+    #     else:
+    #         print('That is not a valid item.')
+
+
+    # if direction.split(' ')[1] == 'drop':
+    #     item = direction[5:]
+    #     if item in myPlayer.items:
+    #         myPlayer.items.remove(item)
+    #         myPlayer.current_room.items.append(item)
+    #         print(f'You have dropped the {item}.')
+    #     else:
+    #         print('That is not a valid item.')
