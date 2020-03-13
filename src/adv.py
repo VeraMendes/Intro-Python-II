@@ -192,24 +192,3 @@ while(True):
     direction = input("move -> ").lower()
     move_to_room(direction)
 
-    # if players enters get [<item>], confirm item is valid
-    # item is removed from room's list of items and added to player list of items
-    # if direction.split(' ')[0] == 'get':
-    #     item = direction[4:]
-    #     if item in myPlayer.current_room.items:
-    #         myPlayer.items.append(item)
-    #         myPlayer.current_room.items.remove(item)
-    #         print (f'You have picked up the {item}.')
-    #         moving = True
-    #     else:
-    #         print('That is not a valid item.')
-
-
-    # if direction.split(' ')[1] == 'drop':
-    #     item = direction[5:]
-    #     if item in myPlayer.items:
-    #         myPlayer.items.remove(item)
-    #         myPlayer.current_room.items.append(item)
-    #         print(f'You have dropped the {item}.')
-    #     else:
-    #         print('That is not a valid item.')
