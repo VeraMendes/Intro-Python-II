@@ -14,10 +14,6 @@ class Player ():
         else:   
             print(f'{self.items}')
 
-    
-    # def __str__(self):
-    #     return f'\n{self.name}\n\n You are at:{self.current_room} and you have the following items {self.items}.\n\n'
-
 
     def __str__(self):
         # empty list

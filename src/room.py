@@ -15,6 +15,7 @@ class Room():
         else:   
             print(f'{self.items}')
 
+
     def __str__(self):
         # empty list
         if self.items == []:

@@ -134,32 +134,37 @@ def move_to_room(direction):
         # if players enters get [<item>], confirm item is valid
         # item is removed from room's list of items and added to player list of items
         elif direction.split(' ')[0] == 'get':
-            item = direction[-1]
-            if item in myPlayer.current_room.items:
-                myPlayer.items.append(item)
-                myPlayer.current_room.items.remove(item)
-                print (f'You have picked up the {item}.')
-                moving = True
-            else:
-                print('That is not a valid item.')
-
-        elif direction.split(' ')[1] == 'drop':
-            item = direction[-1]
-            if item in myPlayer.items:
-                myPlayer.items.remove(item)
-                myPlayer.current_room.items.append(item)
-                print(f'You have dropped the {item}.')
-                moving = True
-            else:
-                print('That is not a valid item.')
-
+            new_item = direction[4:]        
+            print([new_item])      
+            found = False
+            for item in myPlayer.current_room.items:
+                if item.name == new_item:
+                    found = True
+                    myPlayer.items.append(item)
+                    myPlayer.current_room.items.remove(item)
+                    print (f'You have picked up the {new_item}.')
+                    moving = True
+                    break
+            if found == False:
+                print('This is not a valid item.')                   
+        
+        elif direction.split(' ')[0] == 'drop':
+            new_item = direction[5:]        
+            print([new_item])      
+            found = False
+            for item in myPlayer.items:
+                if item.name == new_item:
+                    found = True
+                    myPlayer.current_room.items.append(item)
+                    myPlayer.items.remove(item)
+                    print (f'You have picked up the {new_item}.')
+                    moving = True
+                    break
+            if found == False:
+                print('This is not a valid item.')
         else:
             raise ValueError
 
-        # if valid direction
-        # print new player's current room name and description
-        # new_location = myPlayer.current_room
-        # print (f"\n You are here -> {new_location}")
         print (f"{myPlayer}")
 
     except ValueError:
